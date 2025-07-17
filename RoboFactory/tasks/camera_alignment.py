@@ -80,9 +80,10 @@ class CameraAlignmentEnv(BaseEnv):
             self.scene_builder.initialize(env_idx)
         # alignment between cube and camera
         cube_ppose = self.cube.pose.p
-        self.camera.pose.p[:, 0] = cube_ppose[:, 0]
-        self.camera.pose.p[:, 1] = cube_ppose[:, 1]
-        self.camera.set_pose(self.camera.pose)
+        temp_pose = self.camera.pose
+        temp_pose.p[:, 0] = cube_ppose[:, 0]
+        temp_pose.p[:, 1] = cube_ppose[:, 1]
+        self.camera.set_pose(temp_pose)
         
     def evaluate(self):
         success = self.camera.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20 and self.meat.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20

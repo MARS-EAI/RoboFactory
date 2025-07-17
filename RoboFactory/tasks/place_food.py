@@ -93,9 +93,10 @@ class PlaceFoodEnv(BaseEnv):
             self.scene_builder.initialize(env_idx)
         # alignment between pot and meat
         pot_ppose = self.pot.pose.p
-        self.meat.pose.p[:, 0] = pot_ppose[:, 0]
-        self.meat.pose.p[:, 1] = pot_ppose[:, 1] - 0.25
-        self.meat.set_pose(self.meat.pose)
+        temp_pose = self.meat.pose
+        temp_pose.p[:, 0] = pot_ppose[:, 0]
+        temp_pose.p[:, 1] = pot_ppose[:, 1] - 0.25
+        self.meat.set_pose(temp_pose)
 
     def evaluate(self):
         meat_pose = self.meat.pose.p
