@@ -1,43 +1,73 @@
-<div align="center">
-<h1>RoboFactory: Exploring Embodied Agent Collaboration with Compositional Constraints</h1>
+# Multi-Agent Embodied Intelligence Challenge
+![Background Photo](docs/bg-photo.png)
 
-<a href="https://arxiv.org/abs/2503.16408"><img src="https://img.shields.io/badge/arxiv-2503.16408-b31b1b" alt="arXiv"></a>
-<a href="https://iranqin.github.io/robofactory/"><img src="https://img.shields.io/badge/Project_Page-green" alt="Project Page"></a>
-<a href='https://huggingface.co/datasets/FACEONG/RoboFactory_Dataset'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Datasets-blue'></a>
-</div>
 
-## 🧠Overview
-RoboFactory is a benchmark for embodied multi-agent manipulation, based on [ManiSkill](https://www.maniskill.ai/). Leveraging compositional constraints and specifically designed interfaces, it's an automated data collection framework for embodied multi-agent systems.
+This repository contains the code for Multi-Agent Control Track of the  [ICML Multi-Agent Embodied Intelligence Challenge](https://mars-eai.github.io/MARS-Challenge-Webpage/)
 
-## 🚀 Quick Start
-First, clone this repository to your local machine, and install [vulkan](https://maniskill.readthedocs.io/en/latest/user_guide/getting_started/installation.html#vulkan) and the following dependencies.
+This track focuses on low-level policy execution in physically realistic simulation environments. It utilizes RoboFactory, a simulation benchmark for embodied agents. Participants are required to deploy and control multiple embodied agents (e.g., robotic arms) to collaboratively complete manipulation-centric tasks like block stacking.
+
+Each task is an episode where agents interact with dynamic objects in a shared workspace under partial observability and randomized conditions. The core challenge lies in achieving robust, learned coordination across multiple agents.
+
+
+
+## 🗓️ Competition Timeline
+
+| Date            | Phase             | Description                                                                 |
+|-----------------|-------------------|-----------------------------------------------------------------------------|
+| August 1st      | Warmup Round      | Environment opens for teams to explore and get familiar (no prizes).        |
+| September 1st   | Official Round    | Competition begins with unseen tasks and prize challenges.                  |
+| late October (TBD)  | Official Round Ends | Expected closing of the official round.                                    |
+| December        | Award Ceremony    | Final results and awards will be announced.                                 |
+
+## Installation
+
+### 1. Clone the Repository:
+
+First, install [vulkan](https://maniskill.readthedocs.io/en/latest/user_guide/getting_started/installation.html#vulkan). 
+The repository contains submodules, thus please check it out with
+
 ```bash
-git clone git@github.com:MARS-EAI/RoboFactory.git
-conda create -n RoboFactory python=3.9
-conda activate RoboFactory
-cd RoboFactory
-pip install -r requirements.txt
-# (optional): conda install -c conda-forge networkx=2.5
+# HTTP
+# Use --recurse to clone submodules
+git clone https://github.com/FACEONG/MARS-Challenge-Control-Track.git --recurse
 ```
-Then download the 3D assets in RoboFactory task:
+
+or
+
+```bash
+# SSH
+git clone git@github.com:FACEONG/MARS-Challenge-Control-Track.git --recurse
+```
+
+### 2. Create a conda environment:
+
+```bash
+conda create -n mars python=3.10
+conda activate mars
+```
+
+### 3. Install dependencies:
+
+```bash
+cd RoboFactory/
+pip install -r requirements.txt
+```
+
+### 4. Download assets:
+
 ```bash
 python script/download_assets.py 
 ```
-Now, try to run the task with just a line of code:
+
+### 5. Check the Environment by Running the following line (need graphical desktop)
+
 ```bash
-python script/run_task.py configs/table/lift_barrier.yaml
+python script/run_task.py configs/table/take_photo.yaml
 ```
-For more complex scene like [RoboCasa](https://github.com/robocasa/robocasa), you can download them using the following commands. Note that if you use these scenes in your work please cite the scene dataset authors.
-```bash
-python -m mani_skill.utils.download_asset RoboCasa
-```
-After download the scene dataset, you can try to run it:
-```bash
-python script/run_task.py configs/robocasa/lift_barrier.yaml
-```
+
 ### 🛠 Installing OpenGL/EGL Dependencies on Headless Debian Servers
 
-If you are running simulation environments on a **headless Debian server** without a graphical desktop, you will need to install a minimal set of OpenGL and EGL libraries to ensure compatibility.
+If you are running simulation environments on a **headless Debian server** without a graphical desktop, you can try to install a minimal set of OpenGL and EGL libraries to ensure compatibility.
 
 Run the following commands to install the necessary runtime libraries:
 
@@ -45,60 +75,162 @@ Run the following commands to install the necessary runtime libraries:
 sudo apt update
 sudo apt install libgl1 libglvnd0 libegl1-mesa libgles2-mesa libopengl0
 ```
+Then you can check the environment by running the code in next section (Data Generation).
 
-## 📦Generate Data
-You can use the following script to generate data. The generated data is usually placed in the demos/ folder.
+## Data Generation (RoboFactory)
+
+**Available Tasks for Warmup Round:**
+- `long_pipeline_delivery`
+- `place_food`
+- `take_photo`
+- `three_robots_stack_cube`
+
+You can use the following command to run the tasks using the expert policy solution
+
 ```bash
-# Format: python script/generate_data.py {config_path} {traj_num} [--save-video]
-python script/generate_data.py configs/table/lift_barrier.yaml 150 --save-video
+python script/run_task.py configs/table/[task name].yaml
 ```
-## 🧪Train & Evaluate Policy
-### Data Processing
-The data generated by the ManiSkill framework is in .h5 format. In order to adapt to the training code, we need to convert it to .zarr format. You can convert it according to the following method.
+
+Use the following Commands to generate datas
 
 ```bash
-# 1. make data folder in the first time.
-mkdir data
-mkdir -p data/{h5_data,pkl_data,zarr_data}
+python script/generate_data.py configs/table/[task name].yaml [number of trajectories] --save-video
+# Example:  python script/generate_data.py configs/table/place_food.yaml 100 --save-video
 
-# 2. move your .h5 and .json file into the data/h5_data folder.
-mv {your_h5_file}.h5 data/h5_data/{task_name}.h5
-mv {your_h5_file}.json data/h5_data/{task_name}.json
+# Multi-processing
+python script/generate_data.py configs/table/[task name].yaml [number of trajectories]  --save-video --num-procs [number of processes]
+```
+The generated raw data will be saved by default in the demo/ directory.
 
-# 3. run the script to process the data.
-# NOTE: This is the script for default config. If you add the additional camera in config yaml, modify the script to adapt the data.
+
+## Training the Baseline Policy (Policy-Lightning)
+
+The baseline policy for this project is implemented using the Policy-Lightning framework. 
+
+For now, policy provided is a 2D image-based diffusion policy. This policy is a global policy that takes camera images from all agents and uses a single diffusion model to control all agents jointly. The implementation can be found in the `Policy-Lightning` folder. We plan to support more policies soon.
+
+To learn more about the Policy-Lightning framework, please refer to  [Policy-Lightning/README.md](Policy-Lightning/README.md).
+
+
+
+###  1. Data Preparation
+
+First, create a data folder (like data/), then convert the generated raw data into the training format:
+
+```bash 
+python Policy-Lightning/script/image/extract.py --dataset_path [path_to_raw_data] --output_path [path_to_output_data] --load_num [number_of_episodes] --agent_num [number_of_agents]
+
+# Example:  python Policy-Lightning/script/image/extract.py --dataset_path demos/PlaceFood-rf/motionplanning/xxx.h5 --output_path data/place_food.h5 --load_num 100 --agent_num 2
+```
+
+For a comprehensive explanation of the data format for training, please refer to [docs/data_convert.md](docs/data_convert.md).
+
+
+### 2. Training
+**2D Diffusion Policy:**
+
+```bash
+# General format:
+python Policy-Lightning/workspace.py --config-name=[policy_config] task=[task_name]
+
 # Example:
-python script/parse_h5_to_pkl_multi.py --task_name LiftBarrier-rf --load_num 150  --agent_num 2
-# For 2 agents task, convert 2 .pkl file into .zarr file respectively.
-# Example:
-python script/parse_pkl_to_zarr_dp.py --task_name LiftBarrier-rf --load_num 150 --agent_id 0
-python script/parse_pkl_to_zarr_dp.py --task_name LiftBarrier-rf --load_num 150 --agent_id 1
+python Policy-Lightning/workspace.py --config-name=dp2 task=place_food
 ```
-### Train
-We currently provide training code for [Diffusion Policy](https://arxiv.org/pdf/2303.04137) (DP), and we plan to provide more policies in the future.
-You can train the DP model through the following code:
-```bash
-bash policy/Diffusion-Policy/train.sh ${task_name} ${load_num} ${agent_id} ${seed} ${gpu_id}
-# Example:
-bash policy/Diffusion-Policy/train.sh LiftBarrier-rf 150 0 100 0
-bash policy/Diffusion-Policy/train.sh LiftBarrier-rf 150 1 100 0
-```
-### Evaluation
-Use the .ckpt file to evaluate your model results after the training is completed. When setting DEBUG_MODE to 1, it will open the visual window and output more info.
-```bash
-bash policy/Diffusion-Policy/eval_multi.sh ${config_name} ${DATA_NUM} ${CHECKPOINT_NUM} ${DEBUG_MODE} ${TASK_NAME}
-# Example
-bash policy/Diffusion-Policy/eval_multi.sh configs/table/lift_barrier.yaml 150 300 1 LiftBarrier-rf
-```
-## 🔗Community & Contact
-For any questions or research collaboration opportunities, please don't hesitate to reach out：yiranqin@link.cuhk.edu.cn, faceong02@gmail.com, akikaze@sjtu.edu.cn.
 
-## 📚BibTeX
-```bibtex
-@article{qin2025robofactory,
-  title={RoboFactory: Exploring Embodied Agent Collaboration with Compositional Constraints},
-  author={Qin, Yiran and Kang, Li and Song, Xiufeng and Yin, Zhenfei and Liu, Xiaohong and Liu, Xihui and Zhang, Ruimao and Bai, Lei},
-  journal={arXiv preprint arXiv:2503.16408},
-  year={2025}
-}
+### 3. Evaluation
+
+You can evaluate your trained checkpoints from policy-lightning using the `eval_policy_lt.py` script provided in the project root. This script allows you to run your policy in the simulation environment and report performance metrics.
+
+Before running the evaluation, make sure to **configure the arguments at the top of `eval_policy_lt.py`** to match your experiment settings (e.g., checkpoint path, number of agents, data location, etc.).
+
+
+```bash
+python eval_policy_lt.py --ckpt_path=[checkpoint path] --config=[task config] --max_steps=[policy try max steps]
 ```
+
+
+## Implement Your Own policy
+
+You can implement your own policy under the `custom_policy` directory. This folder contains a `deploy_policy.py` file, which provides an interface for integrating your custom policy with the evaluation and training framework. 
+
+To adapt your policy to the framework, simply wrap your policy logic within the interface provided by `deploy_policy.py`. This ensures compatibility with the rest of the system and allows you to evaluate your policy using the provided scripts (such as `eval_policy.py`).
+
+For example, you can check the `deploy_policy.py` file under the `Policy-Lightning` folder, where there is an example of how to wrap your policy.
+
+After training, you can use the eval_policy.py to eval your custom policy， you should also make sure to **configure the arguments at the top of `eval_policy.py`** to match your experiment settings. 
+
+**Note: Reserve the method "update_obs", "get_action", and "reset" for policy execution.**
+
+
+## (Optional) Camera Configuration
+
+### Customizing Agent Camera Positions and Angles
+
+To adjust the position and orientation of agent cameras in your simulation, follow these steps:
+
+1. **Launch the Interactive Environment**
+
+   Run the following command to open the graphical interface for your task:
+
+   ```bash
+   python script/run_task.py configs/table/[task name].yaml
+   ```
+
+   This will launch a window where you can visualize and interact with the simulation environment.
+
+2. **Review and Adjust Camera Settings**
+
+   - Use the built-in camera widget to inspect the current camera configuration for each agent.
+   - You can manually move and rotate the cameras within the interface to achieve your desired viewpoint.
+
+   ![Camera Widget](docs/camera_widget.png)
+
+3. **Copy and Apply Camera Configuration**
+
+   - Once you are satisfied with the camera's position and angle, click the **"Copy Camera Setting"** button in the interface.
+   - This will output a camera configuration snippet similar to:
+
+     ```
+     camera = add_camera(name="", width=1920, height=1080, fovy=1.57, near=0.1, far=1e+03)
+     camera.set_local_pose(Pose([0.345104, 0.239462, 0.240109], [0.34335, 0.0538675, 0.0197297, -0.937454]))
+     ```
+
+   - Extract the pose parameters (the two lists inside `Pose([...], [...])`) and update the corresponding camera entry in your task config file (`configs/table/[task name].yaml`).
+   - **Important:** Set the `type` field to `"pose"` in the YAML configuration.
+
+   **Example YAML camera configuration:**
+
+   ```yaml
+   - uid: head_camera_agent1
+     pose:
+       type: pose
+       params: [[0.345104, 0.239462, 0.240109], [0.34335, 0.0538675, 0.0197297, -0.937454]]
+     width: 320
+     height: 240
+     fov: 1.5707963268
+     near: 0.1
+     far: 10
+   ```
+
+
+   Repeat this process for each camera you wish to customize.
+
+**If you are using the baseline policy through policy lightning**, please remember to modify the task config of policy-lightning through `Policy-Lightning\config\task` to match up with your camera shape.
+
+During evaluation for the contest, your camer configuration will be **extracted and be used to evaluate your policy**.
+
+## (Optional) Customizing Data Generation
+
+Episode generation is driven by expert rule-based policies—Python scripts that specify sequences of actions to solve each task. The default expert policies are located in the `planner/solutions` directory. Each `.py` file in the folder implements an expert policy as a solution for a task.
+
+You are encouraged to modify and improve these scripts, to generate your own data that best suits your approach.
+
+You can use the following command to run the tasks using the expert policy solution
+
+```bash
+python script/run_task.py configs/table/[task name].yaml
+```
+
+## Contact
+
+If you have any questions, feel free to email us on <icmlmarschallenge@gmail.com>.
