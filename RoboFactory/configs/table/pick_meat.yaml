@@ -67,8 +67,8 @@ cameras:
       pose:
         type: look_at
         params: [[0.25, 0.5, 0.4], [-0.1, 0, 0.1]]
-      width: 512
-      height: 512
+      width: 320
+      height: 240
       fov: 1.5707963268
       near: 0.1
       far: 10
