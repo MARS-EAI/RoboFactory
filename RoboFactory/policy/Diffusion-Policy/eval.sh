@@ -2,18 +2,26 @@
 
 # 确保任务名称作为参数传入
 if [ -z "$1" ]; then
-    echo "Usage: $0 <task_name>"
+    echo "Usage: $0 <task_name> <data_num> <checkpoint_num>"
+    exit 1
+fi
+if [ -z "$2" ]; then
+    echo "Usage: $0 <task_name> <data_num> <checkpoint_num>"
+    exit 1
+fi
+if [ -z "$3" ]; then
+    echo "Usage: $0 <task_name> <data_num> <checkpoint_num>"
     exit 1
 fi
 
-TASK_NAME="$1"
+CONFIG_NAME="$1"
 DATA_NUM="$2"
 CHECKPOINT_NUM="$3"
 DEBUG_MODE="$4"
+TASK_NAME="$5"
 # 生成带时间戳的日志文件
-LOG_FILE="eval_results_${TASK_NAME}_$(date +"%Y%m%d_%H%M%S").log"
+LOG_FILE="eval_results_${TASK_NAME}_${DATA_NUM}_${CHECKPOINT_NUM}_$(date +"%Y%m%d_%H%M%S").log"
 
-cd ../..
 echo "Evaluating task: $TASK_NAME"
 echo "Evaluating task: $TASK_NAME"  >> "$LOG_FILE"
 TOTAL=0
@@ -28,18 +36,31 @@ fi
 
 for SEED in {1000..1099}
 do
-    echo "Running evaluation with seed $SEED for task $TASK_NAME..."
-    
-    OUTPUT=$(python ./mani_skill/examples/test_dp_action.py \
-       -e "$TASK_NAME" \
-       --data-num=$DATA_NUM \
-       --checkpoint-num=$CHECKPOINT_NUM \
-       --render-mode="sensors" \
-       -o="rgb" \
-       -b="cpu" \
-       -n 1 \
-       -s $SEED \
-       $QUIET_FLAG)
+    echo "Running evaluation with seed $SEED for task $CONFIG_NAME..."
+    OUTPUT=""
+    if [[ "$DEBUG_MODE" == "0" || "$DEBUG_MODE" == "false" ]]; then
+        OUTPUT=$(python ./policy/Diffusion-Policy/eval_dp.py \
+                --config="$CONFIG_NAME" \
+                --data-num=$DATA_NUM \
+                --checkpoint-num=$CHECKPOINT_NUM \
+                --render-mode="sensors" \
+                -o="rgb" \
+                -b="cpu" \
+                -n 1 \
+                -s $SEED \
+                $QUIET_FLAG)
+    else
+        OUTPUT=$(python ./policy/Diffusion-Policy/eval_dp.py \
+                --config="$CONFIG_NAME" \
+                --data-num=$DATA_NUM \
+                --checkpoint-num=$CHECKPOINT_NUM \
+                --render-mode="sensors" \
+                -o="rgb" \
+                -b="cpu" \
+                -n 1 \
+                -s $SEED \
+                $QUIET_FLAG)
+    fi
     echo "$OUTPUT"
     LAST_LINE=$(echo "$OUTPUT" | tail -n 1)  # 获取输出的最后一行
     FINE=0

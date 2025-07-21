@@ -10,19 +10,16 @@ def main():
     parser = argparse.ArgumentParser(description='Process some episodes.')
     parser.add_argument('--task_name', type=str, default='LiftBarrier',
                         help='The name of the task (e.g., LiftBarrier)')
-    parser.add_argument('--agent_id', type=int, default=0,
-                        help='The id of the agent')
     parser.add_argument('--load_num', type=int, default=50,
                         help='Number of episodes to process (e.g., 50)')
     args = parser.parse_args()
 
     task_name = args.task_name
-    agent_id = args.agent_id
     num = args.load_num
-    load_dir = f'data/pkl_data/{task_name}_Agent{agent_id}'
+    load_dir = f'data/pkl_data/{task_name}'
     
     total_count = 0
-    save_dir = f'data/zarr_data/{task_name}_Agent{agent_id}_{num}.zarr'
+    save_dir = f'data/zarr_data/{task_name}_{num}.zarr'
 
     if os.path.exists(save_dir):
         shutil.rmtree(save_dir)

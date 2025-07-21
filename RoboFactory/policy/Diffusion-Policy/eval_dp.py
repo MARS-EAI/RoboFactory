@@ -8,6 +8,7 @@ import os
 import hydra
 from pathlib import Path
 from collections import deque
+from tasks import *
 import traceback
 
 import yaml
@@ -33,12 +34,14 @@ from utils.wrappers.record import RecordEpisodeMA
 import tyro
 from dataclasses import dataclass
 from typing import List, Optional, Annotated, Union
-import pdb
 
 @dataclass
 class Args:
-    env_id: Annotated[str, tyro.conf.arg(aliases=["-e"])] = "StackCube"
+    env_id: Annotated[str, tyro.conf.arg(aliases=["-e"])] = ""
     """The environment ID of the task you want to simulate"""
+
+    config: str = "configs/robocasa/take_photo.yaml"
+    """Configuration to build scenes, assets and agents."""
 
     obs_mode: Annotated[str, tyro.conf.arg(aliases=["-o"])] = "rgb"
     """Observation mode"""
@@ -90,7 +93,7 @@ class Args:
 
 def get_policy(checkpoint, output_dir, device):
     # load checkpoint
-    payload = torch.load(open('./policy/Diffusion-Policy/'+checkpoint, 'rb'), pickle_module=dill)
+    payload = torch.load(open('./'+checkpoint, 'rb'), pickle_module=dill)
     cfg = payload['cfg']
     cls = hydra.utils.get_class(cfg._target_)
     workspace = cls(cfg, output_dir=output_dir)
@@ -110,7 +113,7 @@ def get_policy(checkpoint, output_dir, device):
 
 
 class DP:
-    def __init__(self, task_name, checkpoint_num: int, data_num: int):
+    def __init__(self, task_name, checkpoint_num: int, data_num: int, id: int = 0):
         self.policy = get_policy(f'checkpoints/{task_name}_{data_num}/{checkpoint_num}.ckpt', None, 'cuda:0')
         self.runner = DPRunner(output_dir=None)
 
@@ -131,9 +134,8 @@ def get_model_input(observation, agent_pos):
         agent_pos = agent_pos,
     )
 
-
 def main(args: Args):
-    np.set_printoptions(suppress=True, precision=3)
+    np.set_printoptions(suppress=True, precision=5)
     verbose = not args.quiet
     if isinstance(args.seed, int):
         args.seed = [args.seed]
@@ -145,7 +147,13 @@ def main(args: Args):
         parallel_in_single_scene = False
     if args.render_mode == "human" and args.num_envs == 1:
         parallel_in_single_scene = False
+    env_id = args.env_id
+    if env_id == "":
+        with open(args.config, "r") as f:
+            config = yaml.safe_load(f)
+            env_id = config['task_name'] + '-rf'
     env_kwargs = dict(
+        config=args.config, 
         obs_mode=args.obs_mode,
         reward_mode=args.reward_mode,
         control_mode=args.control_mode,
@@ -160,13 +168,13 @@ def main(args: Args):
     )
     if args.robot_uids is not None:
         env_kwargs["robot_uids"] = tuple(args.robot_uids.split(","))
-    env: BaseEnv = gym.make(args.env_id, **env_kwargs)
+    env: BaseEnv = gym.make(env_id, **env_kwargs)
 
     record_dir = args.record_dir + '/' + str(args.seed) + '_' + str(args.data_num) + '_' + str(args.checkpoint_num)
     if record_dir:
-        record_dir = record_dir.format(env_id=args.env_id)
+        record_dir = record_dir.format(env_id=env_id)
         env = RecordEpisodeMA(env, record_dir, info_on_video=False, save_trajectory=False, max_steps_per_video=30000)
-
+    raw_obs, _ = env.reset(seed=args.seed)
     planner = PandaArmMotionPlanningSolver(
         env,
         debug=False,
@@ -175,8 +183,7 @@ def main(args: Args):
         visualize_target_grasp_pose=verbose,
         print_env_info=False,
     )
-    dp = DP(args.env_id, args.checkpoint_num, args.data_num)
-    raw_obs, _ = env.reset(seed=args.seed, options=dict(reconfigure=True))
+    dp = DP(env_id, args.checkpoint_num, args.data_num)
     if args.seed is not None and env.action_space is not None:
         env.action_space.seed(args.seed[0])
     if args.render_mode is not None:
