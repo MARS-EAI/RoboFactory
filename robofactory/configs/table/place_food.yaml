@@ -1,0 +1,126 @@
+task_name: PlaceFood
+scene:
+  name: Table
+  assets: 
+    - name: table
+      file_path: ${ASSET_DIR}/scenes/table/table.glb
+      collision:
+        type: box
+        pos:
+          p: [0, 0, 0.45982145]
+          half_size: [3.0225, 1.51125, 0.45982145]
+      pos: 
+        ppos:
+          p: [-0.12, 0., -0.9196429]
+          q: [0., 0., 1.5707963268]
+        randp_scale: [0., 0., 0.]
+        randq_scale: [0., 0., 0., 0.]
+      scale: [4.375, 4.375, 1.75]
+  env:
+    floor_width: 100
+    
+objects:
+  -
+    name: pot
+    file_path: ${ASSET_DIR}/objects/pot_annotated/mobility.urdf
+    annotation_path: ${ASSET_DIR}/objects/pot_annotated/model_data.json
+    scale: 0.2
+    density: 1
+    pos:
+      ppos:
+        p: [-0.15, 0.05, 0.08]
+        q: [0., 0., 0.]    # not used
+      qpos: [0.732, 0.007, -0.009, 0.681]
+      randp_scale: [0.3, 0, 0.]
+      randq_scale: [0., 0., 0., 0.]
+  -
+    name: meat
+    file_path: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+    annotation_path: ${ASSET_DIR}/objects/meat_annotated/model_data.json
+    material: 
+      type: sapien.pysapien.physx.PhysxMaterial
+      params:
+        static_friction: 0.5
+        dynamic_friction: 0.3
+        restitution: 0.
+    visual:
+      filename: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+      scale: [0.08, 0.4, 0.08]
+    collision:
+      type: convex
+      filename: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+      scale: [0.08, 0.4, 0.08]
+    pos:
+      ppos:
+        p: [-0.15, -0.2, 0.001]
+      qpos: [0.733, 0.082, -0.011, 0.675]
+      randp_scale: [0.3, 0, 0.]
+      randq_scale: [0., 0., 0., 0.]
+    mass_params:
+      mass: 0.5
+      cmass_local_pose: [0., 0., 0.]
+      inertia: [0.1, 0.1, 0.1]
+
+agents:
+  -
+    robot_uid: panda-0
+    pos:
+      ppos:
+        p: [0., -0.75, 0.]
+        q: [0., 0., 1.5707963268]
+      qpos: [0., 0.3926990817, 0., -2.3561944902, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+  -
+    robot_uid: panda-1
+    pos:
+      ppos:
+        p: [0., 0.75, 0.]
+        q: [0., 0., -1.5707963268]
+      qpos: [0., 0.3926990817, 0., -2.3561944902, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+
+cameras:
+  sensor:
+    - 
+      uid: head_camera_agent0
+      pose:
+        type: look_at
+        params: [[-0.5, 0.115, 0.4], [0, -0.235, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+    - 
+      uid: head_camera_agent1
+      pose:
+        type: look_at
+        params: [[0.5, -0.115, 0.4], [0, 0.235, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+    - 
+      uid: head_camera_global
+      pose:
+        type: pose
+        params: [[0.538897, 0.0328311, 0.7419], [0.00132558, -0.278757, 0.00042972, 0.960361]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+  human_render:
+    - 
+      uid: render_camera
+      pose:
+        type: look_at
+        params: [[0.6, 0.7, 0.6], [0., 0., 0.35]]
+      width: 3840
+      height: 2160
+      fov: 1
+      near: 0.01
+      far: 10

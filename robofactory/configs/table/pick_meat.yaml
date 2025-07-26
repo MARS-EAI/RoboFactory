@@ -1,0 +1,85 @@
+# configuration for objects and agents, add scene as well
+task_name: PickMeat
+scene:
+  name: Table
+  assets: 
+    - name: table
+      file_path: ${ASSET_DIR}/scenes/table/table.glb
+      collision:
+        type: box
+        pos:
+          p: [0, 0, 0.45982145]
+          half_size: [3.0225, 1.51125, 0.45982145]
+      pos: 
+        ppos:
+          p: [-0.12, 0., -0.9196429]
+          q: [0., 0., 1.5707963268]
+        randp_scale: [0., 0., 0.]
+        randq_scale: [0., 0., 0., 0.]
+      scale: [4.375, 4.375, 1.75]
+  env:
+    floor_width: 100
+    
+objects:
+  -
+    name: meat
+    file_path: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+    annotation_path: ${ASSET_DIR}/objects/meat_annotated/model_data.json
+    material: 
+      type: sapien.pysapien.physx.PhysxMaterial
+      params:
+        static_friction: 0.3
+        dynamic_friction: 0.3
+        restitution: 0.
+    visual:
+      filename: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+      scale: [0.08, 0.4, 0.08]
+    collision:
+      type: convex
+      filename: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+      scale: [0.08, 0.4, 0.08]
+    pos:
+      ppos:
+        p: [-0.05, -0.05, 0.]
+      qpos: [0.996, 0.055, -0.062, 0.036]
+      randp_scale: [0.2, 0.2, 0.]
+      randq_scale: [0., 0., 0., 0.]
+    mass_params:
+      mass: 0.005
+      cmass_local_pose: [0., 0., 0.]
+      inertia: [0.1, 0.1, 0.1]
+
+agents:
+  - 
+    robot_uid: panda-0
+    pos:
+      ppos:
+        p: [-0.615, 0., 0.]
+        q: [0., 0., 0.]
+      qpos: [0., 0.3926990817, 0., -1.9634954085, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+
+cameras:
+  sensor:
+    - 
+      uid: head_camera
+      pose:
+        type: look_at
+        params: [[0.25, 0.5, 0.4], [-0.1, 0, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+  human_render:
+    - 
+      uid: render_camera
+      pose:
+        type: look_at
+        params: [[0.6, 0.7, 0.6], [0.0, 0.0, 0.35]]
+      width: 512
+      height: 512
+      fov: 1
+      near: 0.01
+      far: 100

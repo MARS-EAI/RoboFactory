@@ -1,0 +1,178 @@
+# configuration for objects and agents, add scene as well
+task_name: CameraAlignment
+scene:
+  name: Table
+  env:
+    floor_width: 100
+  primitives:
+    - 
+      name: cube
+      builder: mani_skill.utils.building.actors.build_cube
+      params:
+        half_size: 0.06
+        color: [0.5, 0.5, 0.5, 1]
+        name: cube
+        body_type: static
+        initial_pose:
+          p: [-0.05, -0.1, 0.03]
+      pos:
+        ppos:
+          p: [-0.05, -0.1, 0.03]
+          q: [0., 0., 1.5707963268]
+        qpos: [1., 0., 0., 0.]
+        randp_scale: [0.1, 0.2, 0.]
+        randq_scale: [0., 0., 0., 0.]
+  assets: 
+    - name: table
+      file_path: ${ASSET_DIR}/scenes/table/table.glb
+      collision:
+        type: box
+        pos:
+          p: [0, 0, 0.45982145]
+          half_size: [3.0225, 1.51125, 0.45982145]
+      pos: 
+        ppos:
+          p: [-0.12, 0., -0.9196429]
+          q: [0., 0., 1.5707963268]
+        randp_scale: [0., 0., 0.]
+        randq_scale: [0., 0., 0., 0.]
+      scale: [4.375, 4.375, 1.75]
+    
+objects:
+  -
+    name: camera
+    file_path: ${ASSET_DIR}/objects/camera_annotated/textured.obj
+    annotation_path: ${ASSET_DIR}/objects/camera_annotated/model_data.json
+    material: 
+      type: sapien.pysapien.physx.PhysxMaterial
+      params:
+        static_friction: 0.3
+        dynamic_friction: 0.3
+        restitution: 0.
+    visual:
+      filename: ${ASSET_DIR}/objects/camera_annotated/textured.obj
+      scale: [0.25, 0.25, 0.25]
+    collision:
+      type: convex
+      filename: ${ASSET_DIR}/objects/camera_annotated/textured.obj
+      scale: [0.25, 0.25, 0.25]
+    pos:
+      ppos:
+        p: [-0.05, -0.1, 0.089]
+      qpos: [0.718, 0.012, 0.015, 0.696]
+      randp_scale: [0.1, 0.2, 0.]
+      randq_scale: [0., 0., 0., 0.]
+    mass_params:
+      mass: 0.001
+      cmass_local_pose: [0., 0., 0.]
+      inertia: [0., 0., 0.]
+  -
+    name: meat
+    file_path: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+    annotation_path: ${ASSET_DIR}/objects/meat_annotated/model_data.json
+    material: 
+      type: sapien.pysapien.physx.PhysxMaterial
+      params:
+        static_friction: 0.3
+        dynamic_friction: 0.3
+        restitution: 0.
+    visual:
+      filename: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+      scale: [0.08, 0.4, 0.08]
+    collision:
+      type: convex
+      filename: ${ASSET_DIR}/objects/meat_annotated/textured.obj
+      scale: [0.08, 0.4, 0.08]
+    pos:
+      ppos:
+        p: [0.3, -0.05, 0.]
+      qpos: [0.014, 0.065, 0.052, 0.996]
+      randp_scale: [0.1, 0.1, 0.]
+      randq_scale: [0., 0., 0., 0.]
+    mass_params:
+      mass: 0.1
+      cmass_local_pose: [0., 0., 0.]
+      inertia: [0.1, 0.1, 0.1]
+
+agents:
+  -
+    robot_uid: panda-0
+    pos:
+      ppos:
+        p: [0., -0.85, 0.]
+        q: [0., 0., 1.5707963268]
+      qpos: [0., 0.3926990817, 0., -1.9634954085, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+  -
+    robot_uid: panda-1
+    pos:
+      ppos:
+        p: [0., 0.85, 0.]
+        q: [0., 0., -1.5707963268]
+      qpos: [0., 0.3926990817, 0., -1.9634954085, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+  -
+    robot_uid: panda-2
+    pos:
+      ppos:
+        p: [1., 0., 0.]
+        q: [0., 0., 3.1415926536]
+      qpos: [0., 0.3926990817, 0., -1.9634954085, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+
+cameras:
+  sensor:
+    - 
+      uid: head_camera_agent0
+      pose:
+        type: look_at
+        params: [[-0.5, 0, 0.4], [0, 0, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+    - 
+      uid: head_camera_agent1
+      pose:
+        type: look_at
+        params: [[-0.5, 0, 0.4], [0, 0, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+    - 
+      uid: head_camera_agent2
+      pose:
+        type: look_at
+        params: [[0.165, -0.5, 0.4], [0.485, 0, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+    - 
+      uid: head_camera_global
+      pose:
+        type: pose
+        params: [[0.418364, 0.465167, 0.492697], [0.435656, 0.249818, 0.127239, -0.855339]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+  human_render:
+    - 
+      uid: render_camera
+      pose:
+        type: pose
+        params: [[0.868396, 1.09695, 0.703708], [0.454605, 0.234498, 0.125406, -0.85007]]
+      width: 512
+      height: 512
+      fov: 1
+      near: 0.01
+      far: 100
