@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Union, Optional
 from functools import cached_property
+import copy
 
 import torch
 import numpy as np
@@ -99,7 +100,8 @@ class RFSceneBuilder(SceneBuilder):
 
     def initialize(self, env_idx: torch.Tensor):
         b = len(env_idx)
-        scene_cfg = self.cfg['scene']
+        cfg = copy.deepcopy(self.cfg)
+        scene_cfg = cfg['scene']
 
         # primitive
         if 'primitives' in scene_cfg:
@@ -124,8 +126,8 @@ class RFSceneBuilder(SceneBuilder):
                 asset.set_pose(Pose.create_from_pq(ppos, qpos))
 
         # objects
-        if 'objects' in self.cfg:
-            objects_cfg = self.cfg['objects']
+        if 'objects' in cfg:
+            objects_cfg = cfg['objects']
             self.movable_objects = {}
             for asset_cfg in objects_cfg:
                 asset = getattr(self.env, asset_cfg['name'], None)
@@ -148,8 +150,8 @@ class RFSceneBuilder(SceneBuilder):
                 asset.set_pose(Pose.create_from_pq(ppos, qpos))
                 self.movable_objects[asset_cfg['name']] = asset
         # agents
-        if 'agents' in self.cfg:
-            agents_cfg = self.cfg['agents']
+        if 'agents' in cfg:
+            agents_cfg = cfg['agents']
             is_multi_agent = (len(agents_cfg) > 1)
             agent = self.env.agent
             self.articulations = {}
