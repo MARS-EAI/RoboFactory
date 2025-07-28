@@ -1,12 +1,12 @@
 # compilation and distribution
 __pycache__
-RoboFactory/assets/*
-RoboFactory/demos/
+robofactory/assets/*
+robofactory/demos/
 assets/*
-RoboFactory/demos
-RoboFactory/data
-RoboFactory/eval_video
-RoboFactory/checkpoints
+robofactory/demos
+robofactory/data
+robofactory/eval_video
+robofactory/checkpoints
 
 docs/
 _ext
@@ -57,4 +57,4 @@ imgui.ini
 .coverage*
 htmlcov/
 
-!RoboFactory/assets/.gitkeep
+!robofactory/assets/.gitkeep

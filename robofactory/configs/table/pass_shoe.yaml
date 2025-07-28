@@ -1,0 +1,132 @@
+# configuration for objects and agents, add scene as well
+task_name: PassShoe
+scene:
+  name: Table
+  primitives:
+    - name: goal_region
+      builder: mani_skill.utils.building.actors.build_red_white_target
+      params:
+        radius: 0.1
+        thickness: 0.00005  # 1e-5
+        name: goal_region
+        add_collision: False
+        body_type: kinematic
+        initial_pose:
+          p: [0.3, 0.3, 0.]
+
+      pos:
+        ppos:
+          p: [0.3, 0.3, 0.]
+        qpos: [0.7071, 0., 0.7071, 0.]
+        randp_scale: [0.2, 0.2, 0.]
+        randq_scale: [0., 0., 0., 0.]
+        
+  assets: 
+    - name: table
+      file_path: ${ASSET_DIR}/scenes/table/table.glb
+      collision:
+        type: box
+        pos:
+          p: [0, 0, 0.45982145]
+          half_size: [3.0225, 1.51125, 0.45982145]
+      pos: 
+        ppos:
+          p: [-0.12, 0., -0.9196429]
+          q: [0., 0., 1.5707963268]
+        randp_scale: [0., 0., 0.]
+        randq_scale: [0., 0., 0., 0.]
+      scale: [4.375, 4.375, 1.75]
+  env:
+    floor_width: 100
+    
+objects:
+  - name: shoe
+    file_path: ${ASSET_DIR}/objects/single_shoe_annotated/base.glb
+    annotation_path: ${ASSET_DIR}/objects/single_shoe_annotated/model_data.json
+    material: 
+      type: sapien.pysapien.physx.PhysxMaterial
+      params:
+        static_friction: 0.3
+        dynamic_friction: 0.3
+        restitution: 0.
+    visual:
+      filename: ${ASSET_DIR}/objects/single_shoe_annotated/base.glb
+      scale: [0.1, 0.1, 0.1]
+    collision:
+      type: convex
+      filename: ${ASSET_DIR}/objects/single_shoe_annotated/base.glb
+      scale: [0.1, 0.1, 0.1]
+    pos:
+      ppos:
+        p: [-0.3, -0.3, 0.042]
+      qpos: [0.055, 0.058, 0.705, 0.705]
+      randp_scale: [-0.2, -0.2, 0.]
+      randq_scale: [0., 0., 0., 0.]
+    mass_params:
+      mass: 1
+      cmass_local_pose: [0., 0., 0.]
+      inertia: [0.1, 0.1, 0.1]
+
+agents:
+  - 
+    robot_uid: panda-0
+    pos:
+      ppos:
+        p: [0., -0.75, 0.]
+        q: [0., 0., 1.5707963268]
+      qpos: [0., 0.3926990817, 0., -1.9634954085, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+  - 
+    robot_uid: panda-1
+    pos:
+      ppos:
+        p: [0., 0.75, 0.]
+        q: [0., 0., -1.5707963268]
+      qpos: [0., 0.3926990817, 0., -1.9634954085, 0., 2.3561944902, 0.7853981634, 0.04, 0.04]
+      randp_scale: [0., 0., 0.]
+      randq_scale: [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+
+cameras:
+  sensor:
+    - 
+      uid: head_camera_agent0
+      pose:
+        type: look_at
+        params: [[-0.5, 0.115, 0.4], [0, -0.235, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+    - 
+      uid: head_camera_agent1
+      pose:
+        type: look_at
+        params: [[0.5, -0.115, 0.4], [0, 0.235, 0.1]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+    - 
+      uid: head_camera_global
+      pose:
+        type: pose
+        params: [[-0.698591, 0.434148, 0.558983], [0.954989, 0.038711, 0.144233, -0.256309]]
+      width: 320
+      height: 240
+      fov: 1.5707963268
+      near: 0.1
+      far: 10
+  human_render:
+    - 
+      uid: render_camera
+      pose:
+        type: look_at
+        params: [[0.6, 0.7, 0.6], [0.0, 0.0, 0.35]]
+      width: 1024
+      height: 1024
+      fov: 1
+      near: 0.01
+      far: 100
