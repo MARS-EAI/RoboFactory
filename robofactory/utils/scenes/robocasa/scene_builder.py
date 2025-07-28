@@ -9,6 +9,7 @@ from transforms3d.euler import euler2quat
 import yaml
 from copy import deepcopy
 from typing import Dict
+import copy
 
 from mani_skill.agents.multi_agent import MultiAgent
 from mani_skill.agents.robots.fetch import FETCH_WHEELS_COLLISION_BIT
@@ -154,10 +155,11 @@ def check_syntax(fixture):
 # TODO: build isolated TableSceneBuilder and RoboCasaSceneBuilder
 class RobocasaSceneBuilder(RFSceneBuilder):
     def build(self):
+        cfg = copy.deepcopy(self.cfg)
         self.scene_data = []  # maps scene_idx to {"fixtures", "fxtr_placements"}
-        scene_idx = self.cfg['scene']['env']['scene_idx']
-        layout_idx = self.cfg['scene']['env']['layout_idx']
-        style_idx = self.cfg['scene']['env']['style_idx']
+        scene_idx = cfg['scene']['env']['scene_idx']
+        layout_idx = cfg['scene']['env']['layout_idx']
+        style_idx = cfg['scene']['env']['style_idx']
         layout_path = scene_registry.get_layout_path(layout_idx)
         style_path = scene_registry.get_style_path(style_idx)
         
@@ -167,12 +169,12 @@ class RobocasaSceneBuilder(RFSceneBuilder):
         # load arena
         with open(layout_path, "r") as f:
             arena_config = yaml.safe_load(f)
-        if 'customized_style' in self.cfg['scene']['env']:
-            with open(self.cfg['scene']['env']['customized_style'], "r") as f:
+        if 'customized_style' in cfg['scene']['env']:
+            with open(cfg['scene']['env']['customized_style'], "r") as f:
                 customized_style = yaml.safe_load(f)
                 merge_dicts(style, customized_style)
-        if 'customized_layout' in self.cfg['scene']['env']:
-            with open(self.cfg['scene']['env']['customized_layout'], "r") as f:
+        if 'customized_layout' in cfg['scene']['env']:
+            with open(cfg['scene']['env']['customized_layout'], "r") as f:
                 customized_layout = yaml.safe_load(f)
                 merge_dicts(arena_config, customized_layout)
         # contains all fixtures with updated configs
@@ -456,7 +458,7 @@ class RobocasaSceneBuilder(RFSceneBuilder):
                             built.actor.set_collision_group_bit(
                                 group=2, bit_idx=actor_bit, bit=1
                             )
-        scene_cfg = self.cfg['scene']
+        scene_cfg = cfg['scene']
         self.scene_objects = {}
         if 'primitives' in scene_cfg:
             for primitive_cfg in scene_cfg['primitives']:
@@ -470,8 +472,8 @@ class RobocasaSceneBuilder(RFSceneBuilder):
                 primitive = builder(self.env.scene, **params)
                 setattr(self.env, primitive_name, primitive)
                 self.scene_objects[primitive_name] = getattr(self.env, primitive_name)
-        if 'objects' in self.cfg:
-            objects_cfg = self.cfg['objects']
+        if 'objects' in cfg:
+            objects_cfg = cfg['objects']
             self.movable_objects = {}
             for object_cfg in objects_cfg:
                 object_file_path = object_cfg['file_path']
@@ -559,7 +561,7 @@ class RobocasaSceneBuilder(RFSceneBuilder):
 
     # def initialize(self, env_idx: torch.Tensor, task_name : str = "default"):
     #     b = len(env_idx)
-    #     scene_cfg = self.cfg['scene']
+    #     scene_cfg = cfg['scene']
 
     #     # primitive
     #     if 'primitives' in scene_cfg:
@@ -574,8 +576,8 @@ class RobocasaSceneBuilder(RFSceneBuilder):
     #             asset.set_pose(Pose.create_from_pq(primitive_cfg['pos']['ppos']['p'], qpos))
 
     #     # objects
-    #     if 'objects' in self.cfg:
-    #         objects_cfg = self.cfg['objects']
+    #     if 'objects' in cfg:
+    #         objects_cfg = cfg['objects']
     #         self.movable_objects = {}
     #         for asset_cfg in objects_cfg:
     #             asset = getattr(self.env, asset_cfg['name'], None)
@@ -588,7 +590,7 @@ class RobocasaSceneBuilder(RFSceneBuilder):
     #             asset.set_pose(Pose.create_from_pq(asset_cfg['pos']['ppos']['p'], qpos))
     #             self.movable_objects[asset_cfg['name']] = asset
     #     # agents
-    #     agents_cfg = self.cfg['agents']
+    #     agents_cfg = cfg['agents']
     #     agent: MultiAgent = self.env.agent
     #     self.articulations = {}
     #     for idx, agent_cfg in enumerate(agents_cfg):

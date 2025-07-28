@@ -21,7 +21,8 @@ from ..scene_builder import SceneBuilder, RFSceneBuilder
 class TableSceneBuilder(RFSceneBuilder):
     def build(self):
         # scene
-        scene_cfg = self.cfg['scene']
+        cfg = copy.deepcopy(self.cfg)
+        scene_cfg = cfg['scene']
         altitude = 0
         self.scene_objects = {}
         if 'primitives' in scene_cfg:
@@ -77,8 +78,8 @@ class TableSceneBuilder(RFSceneBuilder):
         self.scene_objects['ground'] = self.ground
 
         # objects
-        if 'objects' in self.cfg:
-            objects_cfg = self.cfg['objects']
+        if 'objects' in cfg:
+            objects_cfg = cfg['objects']
             self.movable_objects = {}
             for object_cfg in objects_cfg:
                 object_file_path = object_cfg['file_path']

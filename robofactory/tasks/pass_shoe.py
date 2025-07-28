@@ -6,6 +6,7 @@ import sapien
 import torch
 import json
 import yaml
+import copy
 
 from mani_skill.agents.multi_agent import MultiAgent
 from mani_skill.agents.robots import Fetch, Panda
@@ -52,7 +53,8 @@ class PassShoeEnv(BaseEnv):
 
     @property
     def _default_sensor_configs(self):
-        camera_cfg = self.cfg.get('cameras', {})
+        cfg = copy.deepcopy(self.cfg)
+        camera_cfg = cfg.get('cameras', {})
         sensor_cfg = camera_cfg.get('sensor', [])
         all_camera_configs =[]
         for sensor in sensor_cfg:
@@ -66,7 +68,8 @@ class PassShoeEnv(BaseEnv):
 
     @property
     def _default_human_render_camera_configs(self):
-        camera_cfg = self.cfg.get('cameras', {})
+        cfg = copy.deepcopy(self.cfg)
+        camera_cfg = cfg.get('cameras', {})
         render_cfg = camera_cfg.get('human_render', [])
         all_camera_configs =[]
         for render in render_cfg:
@@ -88,15 +91,17 @@ class PassShoeEnv(BaseEnv):
         )
     
     def _load_agent(self, options: dict):
+        cfg = copy.deepcopy(self.cfg)
         init_poses = []
-        for agent_cfg in self.cfg['agents']:
+        for agent_cfg in cfg['agents']:
             init_poses.append(sapien.Pose(p=agent_cfg['pos']['ppos']['p']))
         super()._load_agent(options, init_poses)
 
     def _load_scene(self, options: dict):
-        scene_name = self.cfg['scene']['name']
+        cfg = copy.deepcopy(self.cfg)
+        scene_name = cfg['scene']['name']
         scene_builder = getattr(scene_rf, f'{scene_name}SceneBuilder')
-        self.scene_builder = scene_builder(env=self, cfg=self.cfg)
+        self.scene_builder = scene_builder(env=self, cfg=cfg)
         self.scene_builder.build()
 
 
