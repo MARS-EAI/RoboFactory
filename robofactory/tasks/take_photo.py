@@ -120,8 +120,8 @@ class TakePhotoEnv(BaseEnv):
         return {}
 
     def compute_dense_reward(self, obs: Any, action: torch.Tensor, info: Dict):
-        return {}
+        return 0
 
     def compute_normalized_dense_reward(self, obs: Any, action: torch.Tensor, info: Dict):
-        return []
+        return 0
     
