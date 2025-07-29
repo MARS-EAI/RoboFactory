@@ -28,7 +28,7 @@ class TakePhotoEnv(BaseEnv):
     goal_thresh = 0.025
 
     def __init__(
-        self, *args, robot_uids=("panda", "panda", "panda"), robot_init_qpos_noise=0.02, **kwargs
+        self, *args, robot_uids=("panda", "panda", "panda", "panda"), robot_init_qpos_noise=0.02, **kwargs
     ):
         if 'config' in kwargs:
             with open(kwargs['config'], 'r', encoding='utf-8') as f:
