@@ -2,7 +2,7 @@
 ![Background Photo](docs/bg-photo.png)
 
 
-This repository contains the code for Multi-Agent Control Track of the  [ICML Multi-Agent Embodied Intelligence Challenge](https://mars-eai.github.io/MARS-Challenge-Webpage/)
+This repository contains the code for Multi-Agent Control Track of the  [Multi-Agent Embodied Intelligence Challenge](https://mars-eai.github.io/MARS-Challenge-Webpage/)
 
 This track focuses on low-level policy execution in physically realistic simulation environments. It utilizes RoboFactory, a simulation benchmark for embodied agents. Participants are required to deploy and control multiple embodied agents (e.g., robotic arms) to collaboratively complete manipulation-centric tasks like block stacking.
 
