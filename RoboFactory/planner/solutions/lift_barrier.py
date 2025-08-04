@@ -18,6 +18,8 @@ def solve(env: LiftBarrierEnv, seed=None, debug=False, vis=False):
     env = env.unwrapped
     pose1 = planner.get_grasp_pose_w_labeled_direction(actor=env.barrier, actor_data=env.annotation_data['barrier'], pre_dis=0, id=1)
     pose2 = planner.get_grasp_pose_w_labeled_direction(actor=env.barrier, actor_data=env.annotation_data['barrier'], pre_dis=0, id=2)
+    pose1[2] -= 0.01
+    pose2[2] -= 0.01
     planner.move_to_pose_with_screw(pose=[pose1, pose2], move_id=[0, 1])
     planner.close_gripper(close_id=[0, 1])
     pose1[2] += 0.2

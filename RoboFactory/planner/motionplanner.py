@@ -14,8 +14,10 @@ from copy import deepcopy
 import transforms3d as t3d
 from typing import Union, List, Any
 import sapien.physx as physx
-OPEN = 1
-CLOSED = -1
+XARM6_GRIPPER_OPEN = -1
+XARM6_GRIPPER_CLOSED = 1
+# PANDA_GRIPPER_OPEN = 1
+# PANDA_GRIPPER_CLOSED = -1
 
 
 class PandaArmMotionPlanningSolver:
@@ -55,7 +57,7 @@ class PandaArmMotionPlanningSolver:
         self.vis = vis
         self.print_env_info = print_env_info
         self.visualize_target_grasp_pose = visualize_target_grasp_pose
-        self.gripper_state = [OPEN, ] * self.agent_num
+        self.gripper_state = [XARM6_GRIPPER_OPEN, ] * self.agent_num
         self.grasp_pose_visual = None
         if self.vis and self.visualize_target_grasp_pose:
             self.grasp_pose_visual = []
@@ -251,7 +253,7 @@ class PandaArmMotionPlanningSolver:
     def open_gripper(self, open_id: Union[int, List[int]] = 0):
         ids = [open_id] if not isinstance(open_id, list) else open_id
         for aid in ids:
-            self.gripper_state[aid] = OPEN
+            self.gripper_state[aid] = XARM6_GRIPPER_OPEN
 
         for _ in range(20):
             if not self.is_multi_agent:
@@ -259,7 +261,7 @@ class PandaArmMotionPlanningSolver:
                     ee_pose_arr = self.get_current_ee_pose(agent_id=0)
                     action = np.hstack([ee_pose_arr, self.gripper_state[0]]).reshape(1, -1)  
                 else:
-                    self.gripper_state[0] = min(self.gripper_state[0] + 0.1, OPEN)
+                    self.gripper_state[0] = min(self.gripper_state[0] + 0.1, XARM6_GRIPPER_OPEN)
                     qpos = self.robot[0].get_qpos()[0, :-2].cpu().numpy()
                     if self.control_mode == "pd_joint_pos":
                         action = np.hstack([qpos, self.gripper_state[0]])
@@ -280,7 +282,7 @@ class PandaArmMotionPlanningSolver:
                         else:
                             action = np.hstack([qpos, qpos * 0, self.gripper_state[aid]])
                         if aid in open_id:
-                            self.gripper_state[aid] = min(self.gripper_state[aid] + 0.1, OPEN)
+                            self.gripper_state[aid] = min(self.gripper_state[aid] + 0.1, XARM6_GRIPPER_OPEN)
                             action[-1] = self.gripper_state[aid]
                     action_dict[f"xarm6_robotiq-{aid}"] = action
                 obs, reward, terminated, truncated, info = self.env.step(action_dict)
@@ -295,7 +297,7 @@ class PandaArmMotionPlanningSolver:
     def close_gripper(self, close_id: Union[int, List[int]] = 0):
         ids = [close_id] if not isinstance(close_id, list) else close_id
         for aid in ids:
-            self.gripper_state[aid] = CLOSED
+            self.gripper_state[aid] = XARM6_GRIPPER_CLOSED
 
         for _ in range(20):
             if not self.is_multi_agent:
@@ -303,7 +305,7 @@ class PandaArmMotionPlanningSolver:
                     ee_pose_arr = self.get_current_ee_pose(agent_id=0)
                     action = np.hstack([ee_pose_arr, self.gripper_state[0]]).reshape(1, -1)  
                 else:
-                    self.gripper_state[0] = max(self.gripper_state[0] - 0.1, CLOSED)
+                    self.gripper_state[0] = max(self.gripper_state[0] - 0.1, XARM6_GRIPPER_CLOSED)
                     qpos = self.robot[0].get_qpos()[0, :-2].cpu().numpy()
                     if self.control_mode == "pd_joint_pos":
                         action = np.hstack([qpos, self.gripper_state[0]])
@@ -323,7 +325,7 @@ class PandaArmMotionPlanningSolver:
                         else:
                             action = np.hstack([qpos, qpos * 0, self.gripper_state[aid]])
                         if aid in close_id:
-                            self.gripper_state[aid] = max(self.gripper_state[aid] - 0.1, CLOSED)
+                            self.gripper_state[aid] = max(self.gripper_state[aid] - 0.1, XARM6_GRIPPER_CLOSED)
                             action[-1] = self.gripper_state[aid]
                     action_dict[f"xarm6_robotiq-{aid}"] = action
                 obs, reward, terminated, truncated, info = self.env.step(action_dict)
