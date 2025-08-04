@@ -88,10 +88,7 @@ class PandaArmMotionPlanningSolver:
                 srdf=self.env_agent[id].urdf_path.replace(".urdf", ".srdf"),
                 user_link_names=link_names,
                 user_joint_names=joint_names,
-                # move_group="panda_hand_tcp",
-                move_group="robotiq_arg2f_base_link",
-                # joint_vel_limits=np.ones(7) * self.joint_vel_limits,
-                # joint_acc_limits=np.ones(7) * self.joint_acc_limits,
+                move_group="eef",
                 joint_vel_limits=np.ones(6) * self.joint_vel_limits,
                 joint_acc_limits=np.ones(6) * self.joint_acc_limits,
             )
@@ -203,7 +200,6 @@ class PandaArmMotionPlanningSolver:
                                 action = np.hstack([qpos, qvel, self.gripper_state[aid]])
                             else:
                                 action = np.hstack([qpos, self.gripper_state[aid]])
-                    # action_dict[f"panda-{aid}"] = action
                     action_dict[f"xarm6_robotiq-{aid}"] = action
                 obs, reward, terminated, truncated, info = self.env.step(action_dict)
 
