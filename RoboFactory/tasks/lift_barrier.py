@@ -6,7 +6,7 @@ import torch
 import json
 import yaml
 
-from mani_skill.agents.robots import Fetch, Panda
+from mani_skill.agents.robots import Fetch, Panda, XArm6Robotiq
 from mani_skill.envs.sapien_env import BaseEnv
 from mani_skill.agents.multi_agent import MultiAgent
 from mani_skill.envs.utils import randomization
@@ -22,7 +22,10 @@ import utils.scenes
 
 @register_env("LiftBarrier-rf", max_episode_steps=500)
 class LiftBarrierEnv(BaseEnv):
-    SUPPORTED_ROBOTS = [("panda", "panda")]
+    SUPPORTED_ROBOTS = [
+        ("panda", "panda"),
+        ("xarm6_robotiq", "xarm6_robotiq")
+    ]
     agent: MultiAgent[Tuple[Panda, Panda]]
 
     goal_thresh = 0.025
@@ -31,7 +34,7 @@ class LiftBarrierEnv(BaseEnv):
     cube_half_size = 0.02
 
     def __init__(
-        self, *args, robot_uids=("panda", "panda"), robot_init_qpos_noise=0.02, **kwargs
+        self, *args, robot_uids=("xarm6_robotiq", "xarm6_robotiq"), robot_init_qpos_noise=0.02, **kwargs
     ):
         self.robot_init_qpos_noise = robot_init_qpos_noise
         assert 'config' in kwargs
