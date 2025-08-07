@@ -53,8 +53,8 @@ sudo apt install libgl1 libglvnd0 libegl1-mesa libgles2-mesa libopengl0
 ## 📦Generate Data
 You can use the following script to generate data. The generated data is usually placed in the demos/ folder.
 ```bash
-# Format: python script/generate_data.py {config_path} {traj_num} [--save-video]
-python script/generate_data.py configs/table/lift_barrier.yaml 150 --save-video
+# Format: python script/generate_data.py --config {config_path} --num {traj_num} [--save-video]
+python script/generate_data.py --config configs/table/lift_barrier.yaml --num 150 --save-video
 ```
 ## 🧪Train & Evaluate Policy
 ### Data Processing
