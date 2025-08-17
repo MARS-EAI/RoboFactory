@@ -1,6 +1,4 @@
 # Multi-Agent Embodied Intelligence Challenge
-![Background Photo](docs/bg-photo.png)
-
 
 This repository contains the code for Multi-Agent Control Track of the  [Multi-Agent Embodied Intelligence Challenge](https://mars-eai.github.io/MARS-Challenge-Webpage/)
 
@@ -14,7 +12,7 @@ Each task is an episode where agents interact with dynamic objects in a shared w
 
 | Date            | Phase             | Description                                                                 |
 |-----------------|-------------------|-----------------------------------------------------------------------------|
-| August 1st      | Warmup Round      | Environment opens for teams to explore and get familiar (no prizes).        |
+| August 18th     | Warmup Round      | Environment opens for teams to explore and get familiar (no prizes).        |
 | September 1st   | Official Round    | Competition begins with unseen tasks and prize challenges.                  |
 | late October (TBD)  | Official Round Ends | Expected closing of the official round.                                    |
 | December        | Award Ceremony    | Final results and awards will be announced.                                 |
