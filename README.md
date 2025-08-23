@@ -27,14 +27,14 @@ The repository contains submodules, thus please check it out with
 ```bash
 # HTTP
 # Use --recurse to clone submodules
-git clone https://github.com/FACEONG/MARS-Challenge-Control-Track.git --recurse
+git clone https://github.com/MARS-EAI/RoboFactory.git --recurse
 ```
 
 or
 
 ```bash
 # SSH
-git clone git@github.com:FACEONG/MARS-Challenge-Control-Track.git --recurse
+git clone git@github.com:MARS-EAI/RoboFactory.git --recurse
 ```
 
 ### 2. Create a conda environment:
