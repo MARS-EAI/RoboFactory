@@ -119,7 +119,7 @@ class PlaceFoodEnv(BaseEnv):
         meat_pose = self.meat.pose.p
         pot_pose = self.pot.pose.p
         distance = torch.linalg.norm(meat_pose[..., :2] - pot_pose[..., :2], axis=1)
-        success = self.meat.pose.p[..., 2] < 0.1 + self.agent.agents[0].robot.pose.p[0, 2] and distance < 0.1
+        success = (self.meat.pose.p[..., 2] < 0.1 + self.agent.agents[0].robot.pose.p[0, 2]) & (distance < 0.1)
         return {
             "success": success,
         }

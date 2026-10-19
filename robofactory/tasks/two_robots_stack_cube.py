@@ -140,7 +140,7 @@ class TwoRobotsStackCubeEnv(BaseEnv):
             "is_cubeA_grasped": is_cubeA_grasped,
             "is_cubeB_grasped": is_cubeB_grasped,
             "is_cubeB_on_cubeA": is_cubeB_on_cubeA,
-            "cubeB_placed": cubeA_placed,
+            "cubeA_placed": cubeA_placed,
             "success": success.bool(),
         }
 

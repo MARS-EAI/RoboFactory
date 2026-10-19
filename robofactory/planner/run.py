@@ -93,12 +93,13 @@ def _main(args, proc_id: int = 0, start_seed: int = 0) -> str:
     pbar = tqdm(range(args.num_traj), desc=f"proc_id: {proc_id}")
     seed = start_seed
     if args.seed is not None:
-        seed = args.seed
+        seed += args.seed
     successes = []
     solution_episode_lengths = []
     failed_motion_plans = 0
     passed = 0
     while True:
+        np.random.seed(seed)
         #try:
         res = solve(env, seed=seed, debug=False, vis=True if args.vis else False)
         #except Exception as e:
@@ -126,7 +127,7 @@ def _main(args, proc_id: int = 0, start_seed: int = 0) -> str:
             pbar.set_postfix(
                 dict(
                     success_rate=np.mean(successes),
-                    failed_motion_plan_rate=failed_motion_plans / (seed + 1),
+                    failed_motion_plan_rate=failed_motion_plans / len(successes),
                     avg_episode_length=np.mean(solution_episode_lengths),
                     max_episode_length=np.max(solution_episode_lengths),
                     min_episode_length=np.min(solution_episode_lengths)

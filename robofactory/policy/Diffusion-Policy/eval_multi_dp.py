@@ -232,7 +232,7 @@ def main(args: Args):
                     action_step_dict[f'panda-{id}'].append(1)
                     continue
                 n_step = position.shape[0]
-                action_step_dict[f'panda-{id}'].append(n_step)
+                action_step_dict[f'panda-{id}'].append(max(n_step, 1))
                 gripper_state = now_action[-1]
                 if n_step == 0:
                     action_now = np.hstack([current_qpos, gripper_state])

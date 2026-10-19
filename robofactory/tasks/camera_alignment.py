@@ -103,7 +103,7 @@ class CameraAlignmentEnv(BaseEnv):
         self.camera.set_pose(temp_pose)
         
     def evaluate(self):
-        success = self.camera.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20 and self.meat.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20
+        success = (self.camera.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20) & (self.meat.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20)
         return {
             "success": success,
         }

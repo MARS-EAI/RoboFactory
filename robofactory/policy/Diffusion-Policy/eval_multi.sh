@@ -2,15 +2,15 @@
 
 # 确保任务名称作为参数传入
 if [ -z "$1" ]; then
-    echo "Usage: $0 <task_name> <data_num> <checkpoint_num>"
+    echo "Usage: $0 <config_path> <data_num> <checkpoint_num> [debug_mode] [task_name]"
     exit 1
 fi
 if [ -z "$2" ]; then
-    echo "Usage: $0 <task_name> <data_num> <checkpoint_num>"
+    echo "Usage: $0 <config_path> <data_num> <checkpoint_num> [debug_mode] [task_name]"
     exit 1
 fi
 if [ -z "$3" ]; then
-    echo "Usage: $0 <task_name> <data_num> <checkpoint_num>"
+    echo "Usage: $0 <config_path> <data_num> <checkpoint_num> [debug_mode] [task_name]"
     exit 1
 fi
 

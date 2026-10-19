@@ -150,7 +150,7 @@ class ThreeRobotsStackCubeEnv(BaseEnv):
         cubeC_placed = cubeC_to_goal_dist < self.goal_radius
         is_cubeA_grasped = self.left_agent.is_grasping(self.cubeA)
         is_cubeB_grasped = self.right_agent.is_grasping(self.cubeB)
-        is_cubeC_grasped = self.left_agent.is_grasping(self.cubeC)
+        is_cubeC_grasped = self.middle_agent.is_grasping(self.cubeC)
         success = (
             is_cubeC_on_cubeB * is_cubeB_on_cubeA * cubeB_placed * cubeC_placed * (~is_cubeA_grasped) * (~is_cubeB_grasped) * (~is_cubeC_grasped)
         )
@@ -158,8 +158,8 @@ class ThreeRobotsStackCubeEnv(BaseEnv):
             "is_cubeA_grasped": is_cubeA_grasped,
             "is_cubeB_grasped": is_cubeB_grasped,
             "is_cubeC_grasped": is_cubeC_grasped,
-            "is_cubeA_on_cubeB": is_cubeB_on_cubeA,
-            "is_cubeC_on_cubeA": is_cubeC_on_cubeB,
+            "is_cubeB_on_cubeA": is_cubeB_on_cubeA,
+            "is_cubeC_on_cubeB": is_cubeC_on_cubeB,
             "cubeB_placed": cubeB_placed,
             "success": success.bool(),
         }

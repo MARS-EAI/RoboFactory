@@ -214,8 +214,8 @@ def main(args: Args):
             except Exception as e:
                 error_flag = True
                 print(f"Error occurred: {e}")
-            if error_flag:
-                continue
+            if error_flag or right_pos.shape[0] == 0:
+                right_pos = current_qpos[None]
             result = dict()
             result['position'] = right_pos
             n_step = result["position"].shape[0]

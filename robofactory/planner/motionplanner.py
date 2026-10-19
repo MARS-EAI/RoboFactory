@@ -178,7 +178,7 @@ class PandaArmMotionPlanningSolver:
                     use_point_cloud=self.use_point_cloud,
                 )
                 if result["status"] != "Success":
-                    print("Failed to plan screw motion in agent ", id)
+                    print("Failed to plan screw motion in agent ", planner_id)
                     self.render_wait()
                     return -1
             self.render_wait()
@@ -353,8 +353,6 @@ class PandaArmMotionPlanningSolver:
             elif now_pose_eval > res_eval:
                 res_pose = now_pose
                 res_eval = now_pose_eval
-            else:
-                res_pose = now_pose
         if res_pose is None:
             return None
         return np.array(res_pose)

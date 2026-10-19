@@ -109,9 +109,7 @@ class TakePhotoEnv(BaseEnv):
         camera_hanging = camera.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20
         meat_hanging = meat.pose.p[..., 2] > self.agent.agents[0].robot.pose.p[0, 2] + 0.20
         meat_to_agent_pose = self.agent.agents[2].tcp.pose.p[..., :2] - meat.pose.p[..., :2]
-        print("camera_to_agent_pose: ", camera_to_agent_pose)
-        print("meat_to_agent_pose: ", meat_to_agent_pose)
-        success = torch.all(torch.abs(camera_to_agent_pose) < 0.035, dim=1) and camera_hanging and meat_hanging and meat_to_agent_pose[..., 1] < 0.08
+        success = torch.all(torch.abs(camera_to_agent_pose) < 0.035, dim=1) & camera_hanging & meat_hanging & (meat_to_agent_pose[..., 1] < 0.08)
         return {
             "success": success,
         }

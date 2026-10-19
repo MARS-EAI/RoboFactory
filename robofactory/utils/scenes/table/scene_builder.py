@@ -59,7 +59,7 @@ class TableSceneBuilder(RFSceneBuilder):
                         initial_ppos = np.array(initial_ppos) + np.array(asset_cfg['pos']['randp_scale']) * np.random.rand((len(initial_ppos)))
                         initial_ppos = initial_ppos.tolist()
                     builder.initial_pose = sapien.Pose(
-                        p=asset_cfg['pos']['ppos']['p'], q=euler2quat(*asset_cfg['pos']['ppos']['q'])
+                        p=initial_ppos, q=euler2quat(*asset_cfg['pos']['ppos']['q'])
                     )
                     setattr(self.env, asset_name, builder.build_kinematic(name=f"{scene_cfg['name']}-Workspace"))
                     aabb = (

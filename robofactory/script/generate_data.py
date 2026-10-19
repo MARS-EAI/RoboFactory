@@ -44,6 +44,8 @@ def main():
             config_path = os.path.join(CONFIG_DIR, args.scene, TASK_FILE_MAP[args.task])
         else:
             raise ValueError('Please give the value both scene and task')
+    else:
+        raise ValueError('Please give either a config path or scene and task')
 
     command = (
         f"python -m robofactory.planner.run "
