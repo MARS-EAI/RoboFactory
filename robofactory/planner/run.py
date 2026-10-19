@@ -1,5 +1,6 @@
 import multiprocessing as mp
 import os
+import platform
 from copy import deepcopy
 import time
 import argparse
@@ -64,6 +65,8 @@ def _main(args, proc_id: int = 0, start_seed: int = 0) -> str:
         human_render_camera_configs=dict(shader_pack=args.shader),
         viewer_camera_configs=dict(shader_pack=args.shader),
         sim_backend=args.sim_backend,
+        # macOS has no CUDA; ManiSkill's default render_backend="gpu" maps to a cuda device
+        render_backend="cpu" if platform.system() == "Darwin" else "gpu",
     )
     if env_id not in MP_SOLUTIONS:
         raise RuntimeError(f"No already written motion planning solutions for {env_id}. Available options are {list(MP_SOLUTIONS.keys())}")

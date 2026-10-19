@@ -61,7 +61,12 @@ class PandaArmMotionPlanningSolver:
         if self.vis and self.visualize_target_grasp_pose:
             self.grasp_pose_visual = []
             for id in range(self.agent_num):
-                self.grasp_pose_visual.append(build_panda_gripper_grasp_pose_visual(self.base_env.scene, "grasp_pose_visual" + str(id)))
+                # reuse the actor if a previous solver in this env already built it
+                name = "grasp_pose_visual" + str(id)
+                if name in self.base_env.scene.actors:
+                    self.grasp_pose_visual.append(self.base_env.scene.actors[name])
+                else:
+                    self.grasp_pose_visual.append(build_panda_gripper_grasp_pose_visual(self.base_env.scene, name))
                 self.grasp_pose_visual[id].set_pose(self.base_pose[id])
         
         self.elapsed_steps = 0
